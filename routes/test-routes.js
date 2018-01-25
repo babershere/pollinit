@@ -7,7 +7,7 @@
 var path = require("path");
 // REQUIRE THE MODELS FOLDER
 var db = require("../models");
-var User = require('../models/user.js');
+var User = require('../models/user-model.js');
 var authCont = require('../controllers/auth-controller.js')
 
 
@@ -28,14 +28,14 @@ module.exports = function (app) {
     });
 
 
-    app.get("/create-poll",
-    authCont.verifyJwt,
-    function (req, res) {
-        var hbsObject = {
-            name: 1
-        };
-        res.render("poll", hbsObject);
-    });
+    // app.get("/create-poll",
+    // authCont.verifyJwt,
+    // function (req, res) {
+    //     var hbsObject = {
+    //         name: 1
+    //     };
+    //     res.render("poll", hbsObject);
+    // });
 
 /* Category Pages */
 
@@ -47,6 +47,14 @@ module.exports = function (app) {
             };
             res.render("poll", hbsObject);
         });
+
+    app.get("/my-polls",
+        function(req, res) {
+            var hbsObject = {
+                name: 1
+            }
+            res.render("mypolls", hbsObject);
+        })
 
     
 

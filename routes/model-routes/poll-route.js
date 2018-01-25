@@ -18,7 +18,8 @@ module.exports = function (app) {
         // POST THE POLL TO THE DB
         db.Poll.create({
             question: req.body.question,
-            UserId: req.user.id
+            category: req.body.category,
+            UserId: req.body.UserId
         }).then(function (response) {
             console.log("yo",response)
             answers.forEach(function(answer) {
@@ -28,7 +29,7 @@ module.exports = function (app) {
            return db.Answer.bulkCreate(answers)
         })
         .then(function(response) {
-            res.render(response);
+            res.json(response);
         })
         .catch(function(err) {
             console.log(err);
@@ -46,12 +47,56 @@ module.exports = function (app) {
         // GET THE USER MODEL 
         db.Poll.findOne({
             // FIND WHERE THE USERNAME IS THE SAME AS REQ.BODY
-            include: [db.Answer],
+            include: [db.Answer, db.User],
             where: {
                 id: req.params.id
             }
         }).then(function (dbAuthor) {
-            res.json(dbAuthor);
+            console.log(dbAuthor);            
+            // res.json(dbAuthor);
+            res.render("newpoll", {
+                data: dbAuthor })
+
+        });
+    }); // END GET
+
+    // GET SPECIFIC POLL INFO
+    app.get("/api/mypoll/:id", function (req, res) {
+        // CONSOLE LOG THE REQUEST BODY
+        console.log(req.body);
+        // GET THE USER MODEL 
+        db.Poll.findAll({
+            // FIND WHERE THE USERNAME IS THE SAME AS REQ.BODY
+            include: [db.Answer, db.User],
+            where: {
+                UserId: req.params.id
+            }
+        }).then(function (dbAuthor) {
+            console.log(dbAuthor);            
+            // res.json(dbAuthor);
+            res.render("mypolls", {
+                data: dbAuthor })
+
+        });
+    }); // END GET
+
+    // GET SPECIFIC POLL INFO
+    app.get("/api/poll-cat/:id", function (req, res) {
+        // CONSOLE LOG THE REQUEST BODY
+        console.log(req.body);
+        // GET THE USER MODEL 
+        db.Poll.findAll({
+            // FIND WHERE THE USERNAME IS THE SAME AS REQ.BODY
+            include: [db.Answer],
+            where: {
+                category: req.params.id
+            }
+        }).then(function (dbAuthor) {
+            // console.log(dbAuthor.data);            
+            // res.json(dbAuthor);
+            res.render("popular", {
+                data: dbAuthor })
+
         });
     }); // END GET
 
